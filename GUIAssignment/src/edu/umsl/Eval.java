@@ -388,8 +388,8 @@ questionPanel4.add(myslider);
 //JOptionPane.showMessageDialog(null, "Eggs are not supposed to be green.");
 //}
 }
-private void updateTeams()
-{
+//private void updateTeams()
+//{
 // update balance in database
 //try
 
@@ -408,9 +408,9 @@ private void updateTeams()
 //{
 //JOptionPane.showMessageDialog(null, "Eggs are not supposed to be green.");
 //}
-	}
+//	}
 
-	private void updateTeams() {
+private void updateTeams() {
 // update balance in database
 		try {
 // Below is an example of creating a SQL statement that updated more than a single field in one statement.
