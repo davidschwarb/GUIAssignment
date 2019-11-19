@@ -10,18 +10,17 @@ import java.awt.event.*;
 import java.sql.*;
 //import java.text.*;
 import javax.swing.*;
-import javax.swing.event.*;
-//import org.apache.derby.jdbc.*;
-
+//import javax.swing.event.*;
+import org.apache.derby.jdbc.*;
 
 /**
-*
-* @author brilaw
-*/
-public class Eval extends JFrame implements ActionListener, ItemListener
-{
+ *
+ * @author brilaw
+ */
+public class Eval extends JFrame implements ActionListener, ItemListener {
 //DECLARE THE ELEMENTS OR OBJECTS THAT YOU WILL PUT IN YOUR FRAME
 //NOTICE HOW A PANEL IS CREATED FOR EACH ONE THIS WILL MAKE IT EASIER BUILD
+
 
 public JLabel teamLabel;
 private JComboBox teamComboBox;
@@ -30,6 +29,7 @@ private JPanel teamPanel, teamPanel2;
 static JFrame f;
 //static JSlider b;
 //static JLabel l;
+
 
 // private JLabel courseLabel;
 // private JComboBox courseComboBox;
@@ -53,108 +53,97 @@ private JPanel questionPanel, questionPanel2, questionPanel3, questionPanel4;
 private JButton clearButton;
 private JPanel buttonPanel;
 
+
 //instance variables to hold our data from the gui object to update the database
-String myteamname;
+	String myteamname;
 // String courseName;
-int q1;
-int q2;
-int q3;
-int q4;
-double teamavg;
-boolean avgcalculated;
-String teamcomments;
+	int q1;
+	int q2;
+	int q3;
+	int q4;
+	double teamavg;
+	boolean avgcalculated;
+	String teamcomments;
 // instance variables used to manipulate database
-private Connection myConnection;
-private Statement myStatement;
-private ResultSet myResultSet;
-
-
+	private Connection myConnection;
+	private Statement myStatement;
+	private ResultSet myResultSet;
 
 //MAIN METHOD: NOTICE WE TAKE IN THE ARGUMENTS THAT ARE
 //PASSED IN AND INSTANTIATE OUR CLASS WITH THEM
-public static void main(String args[])
-{
+	public static void main(String args[]) {
 // check command-line arguments
 //if ( args.length == 2 )
 //{
 // get command-line arguments
-String databaseDriver = "org.apache.derby.jdbc.ClientDriver";
+		String databaseDriver = "org.apache.derby.jdbc.ClientDriver";
 //String databaseDriver = "sun.jdbc.odbc.JdbcOdbcDriver";
 //String databaseURL = "jdbc:derby://localhost:1527/PureEval";
-String databaseURL = "jdbc:derby://localhost:1527/Eval";
-
+		String databaseURL = "jdbc:derby://localhost:1527/Eval";
 
 // create new Eval
-Eval eval = new Eval( databaseDriver, databaseURL );
+		Eval eval = new Eval(databaseDriver, databaseURL);
 //eval.createUserInterface();
-eval.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE );
+		eval.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //}
 //else // invalid command-line arguments
 //{
 // System.out.println( "Usage: java EVAL needs databaseDriver databaseURL" );
 //}
-}
+	}
 
 //CONSTRUCTOR: WE SET UP OUR DATABASE HERE THEN MAKE A CALL
 //TO A FUNCTION CALLED CREATEUSERINTERFACE TO BUILD OUR GUI
-public Eval(String databaseDriver, String databaseURL)
-{
+	public Eval(String databaseDriver, String databaseURL) {
 // establish connection to database
-//try
-//{
+		try {
 //// load Sun driver
 ////Class.forName( "org.apache.derby.jdbc.ClientDriver");
-//DriverManager.registerDriver(new ClientDriver());
+			DriverManager.registerDriver(new ClientDriver());
 //// connect to database
-//myConnection = DriverManager.getConnection( "jdbc:derby://localhost:1527/Eval" );
+			myConnection = DriverManager.getConnection(databaseURL);
 //
 //// create Statement for executing SQL
-//myStatement = myConnection.createStatement();
-//}
-//catch ( SQLException exception )
-//{
-//exception.printStackTrace();
-//}
+			myStatement = myConnection.createStatement();
+		} catch (SQLException exception) {
+			System.out.println(exception.getMessage());
+		}
 //catch ( ClassNotFoundException exception )
 // {
 // exception.printStackTrace();
 //}
 
-createUserInterface(); // set up GUI
+		createUserInterface(); // set up GUI
 
-}
+	}
 
-
-
-private void createUserInterface()
-{
+	private void createUserInterface() {
 // get content pane for attaching GUI components
-Container contentPane = getContentPane();
+		Container contentPane = getContentPane();
 
 // enable explicit positioning of GUI components
-contentPane.setLayout( null );
+		contentPane.setLayout(null);
 
 // INSTRUCTOR COMBO BOX SET UP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // set up Instructor Panel
-teamPanel = new JPanel();
-teamPanel.setBounds(40, 20, 276, 48 );
-teamPanel.setBorder( BorderFactory.createEtchedBorder() );
-teamPanel.setLayout( null );
-contentPane.add( teamPanel );
+		teamPanel = new JPanel();
+		teamPanel.setBounds(40, 20, 276, 48);
+		teamPanel.setBorder(BorderFactory.createEtchedBorder());
+		teamPanel.setLayout(null);
+		contentPane.add(teamPanel);
 
 // set up Instructor Label
-teamLabel = new JLabel();
-teamLabel.setBounds( 25, 15, 100, 20 );
-teamLabel.setText( "TEAMS:" );
-teamPanel.add( teamLabel );
+		teamLabel = new JLabel();
+		teamLabel.setBounds(25, 15, 100, 20);
+		teamLabel.setText("TEAMS:");
+		teamPanel.add(teamLabel);
 
 // set up accountNumberJComboBox
-teamComboBox = new JComboBox();
-teamComboBox.setBounds( 150, 15, 96, 25 );
-teamComboBox.addItem( "" );
-teamComboBox.setSelectedIndex( 0 );
-teamPanel.add( teamComboBox );
-
+		teamComboBox = new JComboBox();
+		teamComboBox.setBounds(150, 15, 96, 25);
+		teamComboBox.addItem("");
+		teamComboBox.setSelectedIndex(0);
+		teamPanel.add(teamComboBox);
 
 //COURSE COMBO BOX SET UP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // set up Course Panel
@@ -163,34 +152,32 @@ teamPanel.add( teamComboBox );
 // coursePanel.setBorder( BorderFactory.createEtchedBorder() );
 // coursePanel.setLayout( null );
 // contentPane.add( coursePanel );
-
 // set up Course Label
 // courseLabel = new JLabel();
 // courseLabel.setBounds( 25, 15, 100, 20 );
 // courseLabel.setText( "Course:" );
 // coursePanel.add( courseLabel );
-
 // set up Course ComboBox
 // courseComboBox = new JComboBox();
 // courseComboBox.setBounds( 150, 12, 96, 25 );
 // courseComboBox.addItem( "" );
 // courseComboBox.setSelectedIndex( 0 );
 // coursePanel.add( courseComboBox );
-
-
 //RADIO BUTTON SET UP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // set up Question Panel and Radio Buttons
-questionPanel = new JPanel();
-questionPanel.setBounds( 40, 120, 276, 75 );
-questionPanel.setBorder( BorderFactory.createEtchedBorder() );
-questionPanel.setLayout( null );
-contentPane.add( questionPanel );
+		questionPanel = new JPanel();
+		questionPanel.setBounds(40, 120, 276, 75);
+		questionPanel.setBorder(BorderFactory.createEtchedBorder());
+		questionPanel.setLayout(null);
+		contentPane.add(questionPanel);
 
 // set up question1 Label
+
 questionLabel = new JLabel();
 questionLabel.setBounds( 10, 15, 270, 20 );
 questionLabel.setText( "Q1: Technical? " );
 questionPanel.add( questionLabel );
+
 
 myslider = new JSlider(JSlider.HORIZONTAL, 1, 8, 1);
 //myslider.setMajorTickSpacing(10);
@@ -298,6 +285,7 @@ questionPanel4.add(myslider);
 //questionPanel.add( rb2 );
 //questionPanel.add( rb3 );
 
+
 // SUBMIT BUTTON SET UP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //buttonPanel = new JPanel();
 //buttonPanel.setBounds( 40, 200, 276, 75 );
@@ -317,20 +305,20 @@ questionPanel4.add(myslider);
 //
 //myslider.setBounds(80, 50, 200, 200);
 //buttonPanel.add(myslider);
+
 //read account numbers from database and
 // place them in accountNumberJComboBox
-loadTeams();
+		loadTeams();
 //loadCourses();
 
-setTitle( "EVAL" ); // set title bar string
-setSize( 375, 410 ); // set window size
-setVisible( true ); // display window
-}
+		setTitle("EVAL"); // set title bar string
+		setSize(375, 410); // set window size
+		setVisible(true); // display window
+	}
 
 //OVERRIDING THIS FUNCTION BECAUSE OUR CLASS IMPLEMENTS THE ACTION LISTENER
-@Override
-public void actionPerformed(ActionEvent event)
-{
+	@Override
+	public void actionPerformed(ActionEvent event) {
 //q1 = sliderq1.getValue();
 
 // courseName = (String)courseComboBox.getSelectedItem();
@@ -360,6 +348,7 @@ public void actionPerformed(ActionEvent event)
 //
 //updateTeams();
 //}
+
 // else if(event.getSource().equals(clearButton))
 // {
 // textavgtextbox.text = "";
@@ -376,14 +365,13 @@ public void actionPerformed(ActionEvent event)
 // submitButton.setEnabled(true);
 // avgcalculated = true;
 
-}
+	}
 
-
-@Override
-public void itemStateChanged(ItemEvent event)
-{
+	@Override
+	public void itemStateChanged(ItemEvent event) {
 
 //if ( event.getSource() == rb1 && event.getStateChange() == ItemEvent.SELECTED)
+
 //{
 //q1 = Integer.parseInt(rb1.getText());
 //}
@@ -404,54 +392,67 @@ private void updateTeams()
 {
 // update balance in database
 //try
-//{
-//// Below is an example of creating a SQL statement that updated more than a single field in one statement.
-//String sql1 = "UPDATE APP.TEAM SET Q1 = " + q1
-//+ ", Q2 = " + q2
-//+ ", Q3 = " + q3
-//+ ", Q4 = " + q4
-//+ ", TEAMAVG = " + teamavg
-//+ ", COMMENTS = " + "'" + teamcomments
-//+ "'" + "WHERE " + "TEAMS = " + "'" + myteamname + "'";
-//String sql2 = "UPDATE APP.TEAM SET Q2USEFUL = " + q2 + " WHERE " + "TEAMS = " + "'" + myteamname + "'";
-//// String sql3;
-//// String sql4;
-//// String sql5;
-//// String sql6 = "UPDATE APP.TEAM SET COMMENTS = " + "'" + teamcomments + "'" + " WHERE " + "TEAMS = " + "'" + myteamname + "'";
-////myStatement.executeUpdate(sql1);
-//
-//
-//}
-//catch ( SQLException exception )
-//{
-//exception.printStackTrace();
-//}
 
-} // end method updateBalance
-private void loadTeams()
-{
+//{
+//q1 = Integer.parseInt(rb1.getText());
+//}
+//else if (event.getSource() == rb2 && event.getStateChange() == ItemEvent.SELECTED)
+//{
+//q1 = Integer.parseInt(rb2.getText());
+//}
+//else if (event.getSource() == rb3 && event.getStateChange() == ItemEvent.SELECTED)
+//{
+//q1 = Integer.parseInt(rb3.getText());
+//}
+//else if( event.getSource() == rb1 && event.getStateChange() == ItemEvent.DESELECTED)
+//{
+//JOptionPane.showMessageDialog(null, "Eggs are not supposed to be green.");
+//}
+	}
+
+	private void updateTeams() {
+// update balance in database
+		try {
+// Below is an example of creating a SQL statement that updated more than a single field in one statement.
+			String sql1 = "UPDATE APP.TEAM SET Q1 = " + q1
+				+ ", Q2 = " + q2
+				+ ", Q3 = " + q3
+				+ ", Q4 = " + q4
+				+ ", TEAMAVG = " + teamavg
+				+ ", COMMENTS = " + "'" + teamcomments
+				+ "'" + "WHERE " + "TEAMS = " + "'" + myteamname + "'";
+//			String sql2 = "UPDATE APP.TEAM SET Q2USEFUL = " + q2 + " WHERE " + "TEAMS = " + "'" + myteamname + "'";
+// String sql3;
+// String sql4;
+// String sql5;
+// String sql6 = "UPDATE APP.TEAM SET COMMENTS = " + "'" + teamcomments + "'" + " WHERE " + "TEAMS = " + "'" + myteamname + "'";
+			myStatement.executeUpdate(sql1);
+
+		} catch (SQLException exception) {
+			System.out.println(exception.getMessage());
+		}
+
+	} // end method updateBalance
+
+	private void loadTeams() {
 // get all account numbers from database
-//try
-//{
-//
-////myResultSet = myStatement.executeQuery( "SELECT DISTINCT lastname FROM InstEval" );
-//myResultSet = myStatement.executeQuery( "SELECT TEAMS FROM APP.TEAM" );
-//// add account numbers to accountNumberJComboBox
-//while ( myResultSet.next() )
-//{
-////instructorComboBox.addItem( myResultSet.getString( "lastname" ) );
-//teamComboBox.addItem( myResultSet.getString( "TEAMS" ) );
-//}
-//
-//myResultSet.close(); // close myResultSet
-//
-//} // end try
-//
-//catch ( SQLException exception )
-//{
-//System.out.println(exception.getMessage());
-//}
-}
+		try {
+
+//myresultset = mystatement.executequery( "select distinct lastname from insteval" );
+			myResultSet = myStatement.executeQuery("SELECT TEAMS FROM APP.TEAM");
+// add account numbers to accountnumberjcombobox
+			while (myResultSet.next()) {
+//instructorcombobox.additem( myresultset.getstring( "lastname" ) );
+				teamComboBox.addItem(myResultSet.getString("teams"));
+			}
+
+			myResultSet.close(); // close myresultset
+
+		} // end try
+		catch (SQLException exception) {
+			System.out.println(exception.getMessage());
+		}
+	}
 
 // private void loadCourses()
 // {
@@ -471,11 +472,9 @@ private void loadTeams()
 // myResultSet.close(); // close myResultSet
 //
 // } // end try
-
 // catch ( SQLException exception )
 // {
 // exception.printStackTrace();
 // }
 // }
-
 }
