@@ -25,8 +25,11 @@ public class Eval extends JFrame implements ActionListener, ItemListener
 
 public JLabel teamLabel;
 private JComboBox teamComboBox;
-private JPanel teamPanel;
+private JPanel teamPanel, teamPanel2;
 
+static JFrame f;
+//static JSlider b;
+//static JLabel l;
 
 // private JLabel courseLabel;
 // private JComboBox courseComboBox;
@@ -37,10 +40,10 @@ private JLabel questionLabel, questionLabel2, questionLabel3, questionLabel4;
 //private JRadioButton rb1;
 //private JRadioButton rb2;
 //private JRadioButton rb3;
-private JSlider js1;
-private JSlider js2;
-private JSlider js3;
-private JSlider js4;
+private JSlider myslider;
+//private JSlider js2;
+//private JSlider js3;
+//private JSlider js4;
 
 private JPanel questionPanel, questionPanel2, questionPanel3, questionPanel4;
 //private ButtonGroup questionGroup1;
@@ -189,8 +192,16 @@ questionLabel.setBounds( 10, 15, 270, 20 );
 questionLabel.setText( "Q1: Technical? " );
 questionPanel.add( questionLabel );
 
+myslider = new JSlider(JSlider.HORIZONTAL, 1, 8, 1);
+//myslider.setMajorTickSpacing(10);
+//myslider.setMinorTickSpacing(1);
+//myslider.setPaintTicks(true);
+//myslider.setPaintLabels(true);
+myslider.setBounds(10, 40, 260, 20);
+questionPanel.add(myslider);
+
 questionPanel2 = new JPanel();
-questionPanel2.setBounds( 40, 190, 276, 75 );
+questionPanel2.setBounds( 40, 170, 276, 75 );
 questionPanel2.setBorder( BorderFactory.createEtchedBorder() );
 questionPanel2.setLayout( null );
 contentPane.add( questionPanel2 );
@@ -200,8 +211,16 @@ questionLabel2.setBounds( 10, 35, 270, 20 );
 questionLabel2.setText( "Q2: Useful? " );
 questionPanel2.add( questionLabel2 );
 
+myslider = new JSlider(JSlider.HORIZONTAL, 1, 8, 1);
+//myslider.setMajorTickSpacing(10);
+//myslider.setMinorTickSpacing(1);
+//myslider.setPaintTicks(true);
+//myslider.setPaintLabels(true);
+myslider.setBounds(10, 60, 260, 20);
+questionPanel2.add(myslider);
+
 questionPanel3 = new JPanel();
-questionPanel3.setBounds( 40, 260, 276, 75 );
+questionPanel3.setBounds( 40, 270, 276, 75 );
 questionPanel3.setBorder( BorderFactory.createEtchedBorder() );
 questionPanel3.setLayout( null );
 contentPane.add( questionPanel3 );
@@ -210,6 +229,14 @@ questionLabel3 = new JLabel();
 questionLabel3.setBounds( 10, 35, 270, 20 );
 questionLabel3.setText( "Q3: Clarity? " );
 questionPanel3.add( questionLabel3 );
+
+myslider = new JSlider(JSlider.HORIZONTAL, 1, 8, 1);
+//myslider.setMajorTickSpacing(10);
+//myslider.setMinorTickSpacing(1);
+//myslider.setPaintTicks(true);
+//myslider.setPaintLabels(true);
+myslider.setBounds(10, 40, 260, 20);
+questionPanel3.add(myslider);
 
 questionPanel4 = new JPanel();
 questionPanel4.setBounds( 40, 330, 276, 75 );
@@ -222,9 +249,26 @@ questionLabel4.setBounds( 10, 35, 270, 20 );
 questionLabel4.setText( "Q4: Useful? " );
 questionPanel4.add( questionLabel4 );
 
-js1 = new JSlider( "", false );
-js1.setBounds(80, 50, 200, 200);
-js1.setVisible(true);
+myslider = new JSlider(JSlider.HORIZONTAL, 1, 8, 1);
+//myslider.setMajorTickSpacing(10);
+//myslider.setMinorTickSpacing(1);
+//myslider.setPaintTicks(true);
+//myslider.setPaintLabels(true);
+myslider.setBounds(10, 40, 260, 20);
+questionPanel4.add(myslider);
+
+
+//f = new JFrame ("frame");
+//JPanel teamPanel2 = new JPanel();
+//js1 = new JSlider();
+//teamPanel2.add(js1);
+//f.add(js1);
+//f.setSize(300, 300);
+//f.show();
+
+//js1 = new JSlider( "", false );
+//js1.setBounds(80, 50, 200, 200);
+//js1.setVisible(true);
 //js1.addItemListener(this);
 
 // set up the radio buttons for question 1
@@ -269,10 +313,10 @@ submitButton.addActionListener(this);
 
 
 
-JSlider myslider = new JSlider(JSlider.HORIZONTAL, 1, 5, 1);
-
-myslider.setBounds(80, 50, 200, 200);
-buttonPanel.add(myslider);
+//JSlider myslider = new JSlider(JSlider.HORIZONTAL, 1, 5, 1);
+//
+//myslider.setBounds(80, 50, 200, 200);
+//buttonPanel.add(myslider);
 //read account numbers from database and
 // place them in accountNumberJComboBox
 loadTeams();
