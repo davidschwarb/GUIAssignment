@@ -21,28 +21,38 @@ public class Eval extends JFrame implements ActionListener, ItemListener {
 //DECLARE THE ELEMENTS OR OBJECTS THAT YOU WILL PUT IN YOUR FRAME
 //NOTICE HOW A PANEL IS CREATED FOR EACH ONE THIS WILL MAKE IT EASIER BUILD
 
-	public JLabel teamLabel;
-	private JComboBox teamComboBox;
-	private JPanel teamPanel;
+
+public JLabel teamLabel;
+private JComboBox teamComboBox;
+private JPanel teamPanel, teamPanel2;
+
+static JFrame f;
+//static JSlider b;
+//static JLabel l;
+
 
 // private JLabel courseLabel;
 // private JComboBox courseComboBox;
 // private JPanel coursePanel;
-	private JLabel questionLabel, questionLabel2, questionLabel3, questionLabel4;
+
+
+private JLabel questionLabel, questionLabel2, questionLabel3, questionLabel4;
 //private JRadioButton rb1;
 //private JRadioButton rb2;
 //private JRadioButton rb3;
-	private JSlider js1;
-	private JSlider js2;
-	private JSlider js3;
-	private JSlider js4;
+private JSlider myslider;
+//private JSlider js2;
+//private JSlider js3;
+//private JSlider js4;
 
-	private JPanel questionPanel, questionPanel2, questionPanel3, questionPanel4;
+private JPanel questionPanel, questionPanel2, questionPanel3, questionPanel4;
 //private ButtonGroup questionGroup1;
 
-	private JButton submitButton;
-	private JButton clearButton;
-	private JPanel buttonPanel;
+
+//private JButton submitButton;
+private JButton clearButton;
+private JPanel buttonPanel;
+
 
 //instance variables to hold our data from the gui object to update the database
 	String myteamname;
@@ -162,47 +172,90 @@ public class Eval extends JFrame implements ActionListener, ItemListener {
 		contentPane.add(questionPanel);
 
 // set up question1 Label
-		questionLabel = new JLabel();
-		questionLabel.setBounds(10, 15, 270, 20);
-		questionLabel.setText("Q1: Technical? ");
-		questionPanel.add(questionLabel);
 
-		questionPanel2 = new JPanel();
-		questionPanel2.setBounds(40, 190, 276, 75);
-		questionPanel2.setBorder(BorderFactory.createEtchedBorder());
-		questionPanel2.setLayout(null);
-		contentPane.add(questionPanel2);
+questionLabel = new JLabel();
+questionLabel.setBounds( 10, 15, 270, 20 );
+questionLabel.setText( "Q1: Technical? " );
+questionPanel.add( questionLabel );
 
-		questionLabel2 = new JLabel();
-		questionLabel2.setBounds(10, 35, 270, 20);
-		questionLabel2.setText("Q2: Useful? ");
-		questionPanel2.add(questionLabel2);
 
-		questionPanel3 = new JPanel();
-		questionPanel3.setBounds(40, 260, 276, 75);
-		questionPanel3.setBorder(BorderFactory.createEtchedBorder());
-		questionPanel3.setLayout(null);
-		contentPane.add(questionPanel3);
+myslider = new JSlider(JSlider.HORIZONTAL, 1, 8, 1);
+//myslider.setMajorTickSpacing(10);
+//myslider.setMinorTickSpacing(1);
+//myslider.setPaintTicks(true);
+//myslider.setPaintLabels(true);
+myslider.setBounds(10, 40, 260, 20);
+questionPanel.add(myslider);
 
-		questionLabel3 = new JLabel();
-		questionLabel3.setBounds(10, 35, 270, 20);
-		questionLabel3.setText("Q3: Clarity? ");
-		questionPanel3.add(questionLabel3);
+questionPanel2 = new JPanel();
+questionPanel2.setBounds( 40, 170, 276, 75 );
+questionPanel2.setBorder( BorderFactory.createEtchedBorder() );
+questionPanel2.setLayout( null );
+contentPane.add( questionPanel2 );
 
-		questionPanel4 = new JPanel();
-		questionPanel4.setBounds(40, 330, 276, 75);
-		questionPanel4.setBorder(BorderFactory.createEtchedBorder());
-		questionPanel4.setLayout(null);
-		contentPane.add(questionPanel4);
+questionLabel2 = new JLabel();
+questionLabel2.setBounds( 10, 35, 270, 20 );
+questionLabel2.setText( "Q2: Useful? " );
+questionPanel2.add( questionLabel2 );
 
-		questionLabel4 = new JLabel();
-		questionLabel4.setBounds(10, 35, 270, 20);
-		questionLabel4.setText("Q4: Useful? ");
-		questionPanel4.add(questionLabel4);
+myslider = new JSlider(JSlider.HORIZONTAL, 1, 8, 1);
+//myslider.setMajorTickSpacing(10);
+//myslider.setMinorTickSpacing(1);
+//myslider.setPaintTicks(true);
+//myslider.setPaintLabels(true);
+myslider.setBounds(10, 60, 260, 20);
+questionPanel2.add(myslider);
 
-		js1 = new JSlider();
-		js1.setBounds(80, 50, 200, 200);
-		js1.setVisible(true);
+questionPanel3 = new JPanel();
+questionPanel3.setBounds( 40, 270, 276, 75 );
+questionPanel3.setBorder( BorderFactory.createEtchedBorder() );
+questionPanel3.setLayout( null );
+contentPane.add( questionPanel3 );
+
+questionLabel3 = new JLabel();
+questionLabel3.setBounds( 10, 50, 270, 20 );
+questionLabel3.setText( "Q3: Clarity? " );
+questionPanel3.add( questionLabel3 );
+
+myslider = new JSlider(JSlider.HORIZONTAL, 1, 8, 1);
+//myslider.setMajorTickSpacing(10);
+//myslider.setMinorTickSpacing(1);
+//myslider.setPaintTicks(true);
+//myslider.setPaintLabels(true);
+myslider.setBounds(10, 40, 260, 20);
+questionPanel3.add(myslider);
+
+questionPanel4 = new JPanel();
+questionPanel4.setBounds( 40, 330, 276, 75 );
+questionPanel4.setBorder( BorderFactory.createEtchedBorder() );
+questionPanel4.setLayout( null );
+contentPane.add( questionPanel4 );
+
+questionLabel4 = new JLabel();
+questionLabel4.setBounds( 10, 75, 270, 20 );
+questionLabel4.setText( "Q4: Useful? " );
+questionPanel4.add( questionLabel4 );
+
+myslider = new JSlider(JSlider.HORIZONTAL, 1, 8, 1);
+//myslider.setMajorTickSpacing(10);
+//myslider.setMinorTickSpacing(1);
+//myslider.setPaintTicks(true);
+//myslider.setPaintLabels(true);
+myslider.setBounds(10, 40, 260, 20);
+questionPanel4.add(myslider);
+
+
+//f = new JFrame ("frame");
+//JPanel teamPanel2 = new JPanel();
+//js1 = new JSlider();
+//teamPanel2.add(js1);
+//f.add(js1);
+//f.setSize(300, 300);
+//f.show();
+
+//js1 = new JSlider( "", false );
+//js1.setBounds(80, 50, 200, 200);
+//js1.setVisible(true);
 //js1.addItemListener(this);
 
 // set up the radio buttons for question 1
@@ -210,40 +263,49 @@ public class Eval extends JFrame implements ActionListener, ItemListener {
 //rb1.setBounds(20, 30, 40, 40 );
 //rb1.setVisible(true);
 //rb1.addItemListener(this);
+
 //rb2 = new JRadioButton("2", false);
 //rb2.setBounds(80, 30, 40, 40 );
 //rb2.setVisible(true);
 //rb2.addItemListener(this);
+
 //rb3 = new JRadioButton( "3", false );
 //rb3.setBounds(140, 30, 40, 40 );
 //rb3.setVisible(true);
 //rb3.addItemListener(this);
+
 // create logical relationship between JRadioButtons
 //questionGroup1 = new ButtonGroup();
 //questionGroup1.add( rb1 );
 //questionGroup1.add( rb2 );
 //questionGroup1.add( rb3 );
+
 // add radio button to the panel
 //questionPanel.add( rb1 );
 //questionPanel.add( rb2 );
 //questionPanel.add( rb3 );
+
+
 // SUBMIT BUTTON SET UP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		buttonPanel = new JPanel();
-		buttonPanel.setBounds(40, 200, 276, 75);
-		buttonPanel.setBorder(BorderFactory.createEtchedBorder());
-		buttonPanel.setLayout(null);
-		contentPane.add(buttonPanel);
+//buttonPanel = new JPanel();
+//buttonPanel.setBounds( 40, 200, 276, 75 );
+//buttonPanel.setBorder( BorderFactory.createEtchedBorder() );
+//buttonPanel.setLayout( null );
+//contentPane.add( buttonPanel );
+//
+//submitButton = new JButton( "SUBMIT" );
+//submitButton.setBounds(80, 15, 100, 50);
+//submitButton.setVisible(true);
+//buttonPanel.add(submitButton);
+//submitButton.addActionListener(this);
 
-		submitButton = new JButton("SUBMIT");
-		submitButton.setBounds(80, 15, 100, 50);
-		submitButton.setVisible(true);
-		buttonPanel.add(submitButton);
-		submitButton.addActionListener(this);
 
-		JSlider myslider = new JSlider(JSlider.HORIZONTAL, 1, 5, 1);
 
-		myslider.setBounds(80, 50, 200, 200);
-		buttonPanel.add(myslider);
+//JSlider myslider = new JSlider(JSlider.HORIZONTAL, 1, 5, 1);
+//
+//myslider.setBounds(80, 50, 200, 200);
+//buttonPanel.add(myslider);
+
 //read account numbers from database and
 // place them in accountNumberJComboBox
 		loadTeams();
@@ -260,28 +322,33 @@ public class Eval extends JFrame implements ActionListener, ItemListener {
 //q1 = sliderq1.getValue();
 
 // courseName = (String)courseComboBox.getSelectedItem();
-		if (event.getSource().equals(submitButton)) {
-			myteamname = (String) teamComboBox.getSelectedItem();
+//if(event.getSource().equals(submitButton))
+//{
+//myteamname = (String)teamComboBox.getSelectedItem();
+//
+//
+////if ( rb1.isSelected())
+////{
+////q1 = Integer.parseInt(rb1.getText());
+////}
+////else if (rb2.isSelected())
+////{
+////q1 = Integer.parseInt(rb2.getText());
+////}
+////else if (rb3.isSelected())
+////{
+////q1 = Integer.parseInt(rb3.getText());
+////}
+//
+////q2 = 8;
+////q3 = 2;
+////q4 = 5;
+////teamavg = ((q1+q2+q3+q4)/4);
+////teamcomments = "Not a bad presentation not a good one either";
+//
+//updateTeams();
+//}
 
-//if ( rb1.isSelected())
-//{
-//q1 = Integer.parseInt(rb1.getText());
-//}
-//else if (rb2.isSelected())
-//{
-//q1 = Integer.parseInt(rb2.getText());
-//}
-//else if (rb3.isSelected())
-//{
-//q1 = Integer.parseInt(rb3.getText());
-//}
-//q2 = 8;
-//q3 = 2;
-//q4 = 5;
-//teamavg = ((q1+q2+q3+q4)/4);
-//teamcomments = "Not a bad presentation not a good one either";
-			updateTeams();
-		}
 // else if(event.getSource().equals(clearButton))
 // {
 // textavgtextbox.text = "";
@@ -304,6 +371,28 @@ public class Eval extends JFrame implements ActionListener, ItemListener {
 	public void itemStateChanged(ItemEvent event) {
 
 //if ( event.getSource() == rb1 && event.getStateChange() == ItemEvent.SELECTED)
+
+//{
+//q1 = Integer.parseInt(rb1.getText());
+//}
+//else if (event.getSource() == rb2 && event.getStateChange() == ItemEvent.SELECTED)
+//{
+//q1 = Integer.parseInt(rb2.getText());
+//}
+//else if (event.getSource() == rb3 && event.getStateChange() == ItemEvent.SELECTED)
+//{
+//q1 = Integer.parseInt(rb3.getText());
+//}
+//else if( event.getSource() == rb1 && event.getStateChange() == ItemEvent.DESELECTED)
+//{
+//JOptionPane.showMessageDialog(null, "Eggs are not supposed to be green.");
+//}
+}
+private void updateTeams()
+{
+// update balance in database
+//try
+
 //{
 //q1 = Integer.parseInt(rb1.getText());
 //}
