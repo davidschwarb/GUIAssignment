@@ -6,66 +6,83 @@ import java.awt.Container;
 import java.sql.*;
 //import java.text.*;
 import javax.swing.*;
+
 import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+
 import org.apache.derby.jdbc.*;
 
 /**
  *
- * @author karbo
+
+ * @author brilaw
  */
-public class Eval extends JFrame implements ActionListener, ItemListener 
-{
+public class Eval extends JFrame implements ActionListener, ItemListener {
 //DECLARE THE ELEMENTS OR OBJECTS THAT YOU WILL PUT IN YOUR FRAME
 //NOTICE HOW A PANEL IS CREATED FOR EACH ONE THIS WILL MAKE IT EASIER BUILD
 
-    public JLabel teamLabel;
-    private JComboBox teamComboBox;
-    private JPanel teamPanel;
-    
-    private JLabel questionLabel;
-    private JSlider slider1;
-    private JSlider slider2;
-    private JSlider slider3;
-    private JSlider slider4;
-    
-    private JRadioButton rb1;
-    private JRadioButton rb2;
-    private JRadioButton rb3;
-    private JPanel questionPanel;
-    private ButtonGroup questionGroup1;
-    
-    private JButton submitButton;
-    private JButton clearButton;
-    private JPanel buttonPanel;
+
+public JLabel teamLabel;
+private JComboBox teamComboBox;
+private JPanel teamPanel, teamPanel2;
+
+static JFrame f;
+//static JSlider b;
+//static JLabel l;
+
+
+// private JLabel courseLabel;
+// private JComboBox courseComboBox;
+// private JPanel coursePanel;
+
+
+private JLabel questionLabel, questionLabel2, questionLabel3, questionLabel4;
+//private JRadioButton rb1;
+//private JRadioButton rb2;
+//private JRadioButton rb3;
+private JSlider myslider;
+//private JSlider js2;
+//private JSlider js3;
+//private JSlider js4;
+
+private JPanel questionPanel, questionPanel2, questionPanel3, questionPanel4;
+//private ButtonGroup questionGroup1;
+
+
+//private JButton submitButton;
+private JButton clearButton;
+private JPanel buttonPanel;
+
+
 
 //instance variables to hold our data from the gui object to update the database
-    String myteamname;
+
+	String myteamname;
 // String courseName;
-    int q1;
-    int q2;
-    int q3;
-    int q4;
-    double teamavg;
-    boolean avgcalculated;
-    String teamcomments;
+	int q1;
+	int q2;
+	int q3;
+	int q4;
+	double teamavg;
+	boolean avgcalculated;
+	String teamcomments;
 // instance variables used to manipulate database
-    private Connection myConnection;
-    private Statement myStatement;
-    private ResultSet myResultSet;
+	private Connection myConnection;
+	private Statement myStatement;
+	private ResultSet myResultSet;
 
 //MAIN METHOD: NOTICE WE TAKE IN THE ARGUMENTS THAT ARE
 //PASSED IN AND INSTANTIATE OUR CLASS WITH THEM
-    
-    public static void main(String args[]) 
-    {
+	public static void main(String args[]) {
+
 // check command-line arguments
 //if ( args.length == 2 )
 //{
 // get command-line arguments
+
         String databaseDriver = "org.apache.derby.jdbc.ClientDriver";
 //String databaseDriver = "sun.jdbc.odbc.JdbcOdbcDriver";
 //String databaseURL = "jdbc:derby://localhost:1527/PureEval";
@@ -75,106 +92,253 @@ public class Eval extends JFrame implements ActionListener, ItemListener
         Eval eval = new Eval(databaseDriver, databaseURL);
         eval.createUserInterface();
         eval.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 //}
 //else // invalid command-line arguments
 //{
 // System.out.println( "Usage: java EVAL needs databaseDriver databaseURL" );
 //}
-    }
+
+	}
 
 //CONSTRUCTOR: WE SET UP OUR DATABASE HERE THEN MAKE A CALL
 //TO A FUNCTION CALLED CREATEUSERINTERFACE TO BUILD OUR GUI
-    public Eval(String databaseDriver, String databaseURL) 
-    {
+	public Eval(String databaseDriver, String databaseURL) {
 // establish connection to database
-        try 
-        {
-// load Sun driver
-//Class.forName( "org.apache.derby.jdbc.ClientDriver");
-            DriverManager.registerDriver(new ClientDriver());
-// connect to database
-            myConnection = DriverManager.getConnection( databaseURL );
+		try {
+//// load Sun driver
+////Class.forName( "org.apache.derby.jdbc.ClientDriver");
+			DriverManager.registerDriver(new ClientDriver());
+//// connect to database
+			myConnection = DriverManager.getConnection(databaseURL);
+//
+//// create Statement for executing SQL
+			myStatement = myConnection.createStatement();
+		} catch (SQLException exception) {
+			System.out.println(exception.getMessage());
+		}
 
-// create Statement for executing SQL
-            myStatement = myConnection.createStatement();
-        } 
-        catch (SQLException exception) 
-        {
-            exception.printStackTrace();
-        }
 //catch ( ClassNotFoundException exception )
 // {
 // exception.printStackTrace();
 //}
 
-        //createUserInterface(); // set up GUI
 
-    }
+//         //createUserInterface(); // set up GUI
 
-    private void createUserInterface() 
-    {
-// get content pane for attaching GUI components
-        Container contentPane = getContentPane();
+//     }
 
-// enable explicit positioning of GUI components
-        contentPane.setLayout(null);
+//     private void createUserInterface() 
+//     {
+// // get content pane for attaching GUI components
+//         Container contentPane = getContentPane();
 
-// INSTRUCTOR COMBO BOX SET UP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// set up Instructor Panel
-        teamPanel = new JPanel();
-        teamPanel.setBounds(40, 20, 276, 48);
-        teamPanel.setBorder(BorderFactory.createEtchedBorder());
-        teamPanel.setLayout(null);
-        contentPane.add(teamPanel);
+// // enable explicit positioning of GUI components
+//         contentPane.setLayout(null);
 
-// set up Instructor Label
-        teamLabel = new JLabel();
-        teamLabel.setBounds(25, 15, 100, 20);
-        teamLabel.setText("TEAMS:");
-        teamPanel.add(teamLabel);
+// // INSTRUCTOR COMBO BOX SET UP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// // set up Instructor Panel
+//         teamPanel = new JPanel();
+//         teamPanel.setBounds(40, 20, 276, 48);
+//         teamPanel.setBorder(BorderFactory.createEtchedBorder());
+//         teamPanel.setLayout(null);
+//         contentPane.add(teamPanel);
 
-// set up accountNumberJComboBox
-        teamComboBox = new JComboBox();
-        teamComboBox.setBounds(150, 15, 96, 25);
-        teamComboBox.addItem("");
-        teamComboBox.setSelectedIndex(0);
-        teamPanel.add(teamComboBox);
+// // set up Instructor Label
+//         teamLabel = new JLabel();
+//         teamLabel.setBounds(25, 15, 100, 20);
+//         teamLabel.setText("TEAMS:");
+//         teamPanel.add(teamLabel);
 
-//RADIO BUTTON SET UP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// set up Question Panel and Radio Buttons
-        questionPanel = new JPanel();
-        questionPanel.setBounds(40, 120, 276, 75);
-        questionPanel.setBorder(BorderFactory.createEtchedBorder());
-        questionPanel.setLayout(null);
-        contentPane.add(questionPanel);
+// // set up accountNumberJComboBox
+//         teamComboBox = new JComboBox();
+//         teamComboBox.setBounds(150, 15, 96, 25);
+//         teamComboBox.addItem("");
+//         teamComboBox.setSelectedIndex(0);
+//         teamPanel.add(teamComboBox);
 
-// set up question1 Label
-        questionLabel = new JLabel();
-        questionLabel.setBounds(10, 15, 270, 20);
-        questionLabel.setText("Q1: How would you rate the instructors jokes?");
-        questionPanel.add(questionLabel);
+// //RADIO BUTTON SET UP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// // set up Question Panel and Radio Buttons
+//         questionPanel = new JPanel();
+//         questionPanel.setBounds(40, 120, 276, 75);
+//         questionPanel.setBorder(BorderFactory.createEtchedBorder());
+//         questionPanel.setLayout(null);
+//         contentPane.add(questionPanel);
+
+// // set up question1 Label
+//         questionLabel = new JLabel();
+//         questionLabel.setBounds(10, 15, 270, 20);
+//         questionLabel.setText("Q1: How would you rate the instructors jokes?");
+//         questionPanel.add(questionLabel);
         
-// set up the new slider for question 1
-        JFrame f = new JFrame("JSlider Sample");
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        Container content = f.getContentPane();
-        slider1 = new JSlider(JSlider.HORIZONTAL, 1 , 8, 1);
-        //slider1.setBounds(80, 50, 200, 200);
-        slider1.setMinorTickSpacing(1);
-        slider1.setMajorTickSpacing(8);
-        slider1.setPaintTicks(true);
-        slider1.setSnapToTicks(true);
-        slider1.setPaintTrack(false);
-        slider1.setPaintLabels(true);
-        content.add(slider1, BorderLayout.CENTER);
-        f.setSize(300, 100);
-        f.setVisible(true);
+// // set up the new slider for question 1
+//         JFrame f = new JFrame("JSlider Sample");
+//         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//         Container content = f.getContentPane();
+//         slider1 = new JSlider(JSlider.HORIZONTAL, 1 , 8, 1);
+//         //slider1.setBounds(80, 50, 200, 200);
+//         slider1.setMinorTickSpacing(1);
+//         slider1.setMajorTickSpacing(8);
+//         slider1.setPaintTicks(true);
+//         slider1.setSnapToTicks(true);
+//         slider1.setPaintTrack(false);
+//         slider1.setPaintLabels(true);
+//         content.add(slider1, BorderLayout.CENTER);
+//         f.setSize(300, 100);
+//         f.setVisible(true);
         
-        questionPanel.add(slider1);
+//         questionPanel.add(slider1);
         
         //buttonPanel.add(slider1);
         
         
+
+		createUserInterface(); // set up GUI
+
+	}
+
+	private void createUserInterface() {
+// get content pane for attaching GUI components
+		Container contentPane = getContentPane();
+
+// enable explicit positioning of GUI components
+		contentPane.setLayout(null);
+
+// INSTRUCTOR COMBO BOX SET UP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// set up Instructor Panel
+		teamPanel = new JPanel();
+		teamPanel.setBounds(40, 20, 276, 48);
+		teamPanel.setBorder(BorderFactory.createEtchedBorder());
+		teamPanel.setLayout(null);
+		contentPane.add(teamPanel);
+
+// set up Instructor Label
+		teamLabel = new JLabel();
+		teamLabel.setBounds(25, 15, 100, 20);
+		teamLabel.setText("TEAMS:");
+		teamPanel.add(teamLabel);
+
+// set up accountNumberJComboBox
+		teamComboBox = new JComboBox();
+		teamComboBox.setBounds(150, 15, 96, 25);
+		teamComboBox.addItem("");
+		teamComboBox.setSelectedIndex(0);
+		teamPanel.add(teamComboBox);
+
+//COURSE COMBO BOX SET UP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// set up Course Panel
+// coursePanel = new JPanel();
+// coursePanel.setBounds( 40, 70, 276, 48 );
+// coursePanel.setBorder( BorderFactory.createEtchedBorder() );
+// coursePanel.setLayout( null );
+// contentPane.add( coursePanel );
+// set up Course Label
+// courseLabel = new JLabel();
+// courseLabel.setBounds( 25, 15, 100, 20 );
+// courseLabel.setText( "Course:" );
+// coursePanel.add( courseLabel );
+// set up Course ComboBox
+// courseComboBox = new JComboBox();
+// courseComboBox.setBounds( 150, 12, 96, 25 );
+// courseComboBox.addItem( "" );
+// courseComboBox.setSelectedIndex( 0 );
+// coursePanel.add( courseComboBox );
+//RADIO BUTTON SET UP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// set up Question Panel and Radio Buttons
+		questionPanel = new JPanel();
+		questionPanel.setBounds(40, 120, 276, 75);
+		questionPanel.setBorder(BorderFactory.createEtchedBorder());
+		questionPanel.setLayout(null);
+		contentPane.add(questionPanel);
+
+// set up question1 Label
+
+questionLabel = new JLabel();
+questionLabel.setBounds( 10, 15, 270, 20 );
+questionLabel.setText( "Q1: Technical? " );
+questionPanel.add( questionLabel );
+
+
+myslider = new JSlider(JSlider.HORIZONTAL, 1, 8, 1);
+//myslider.setMajorTickSpacing(10);
+//myslider.setMinorTickSpacing(1);
+//myslider.setPaintTicks(true);
+//myslider.setPaintLabels(true);
+myslider.setBounds(10, 40, 260, 20);
+questionPanel.add(myslider);
+
+questionPanel2 = new JPanel();
+questionPanel2.setBounds( 40, 170, 276, 75 );
+questionPanel2.setBorder( BorderFactory.createEtchedBorder() );
+questionPanel2.setLayout( null );
+contentPane.add( questionPanel2 );
+
+questionLabel2 = new JLabel();
+questionLabel2.setBounds( 10, 35, 270, 20 );
+questionLabel2.setText( "Q2: Useful? " );
+questionPanel2.add( questionLabel2 );
+
+myslider = new JSlider(JSlider.HORIZONTAL, 1, 8, 1);
+//myslider.setMajorTickSpacing(10);
+//myslider.setMinorTickSpacing(1);
+//myslider.setPaintTicks(true);
+//myslider.setPaintLabels(true);
+myslider.setBounds(10, 60, 260, 20);
+questionPanel2.add(myslider);
+
+questionPanel3 = new JPanel();
+questionPanel3.setBounds( 40, 270, 276, 75 );
+questionPanel3.setBorder( BorderFactory.createEtchedBorder() );
+questionPanel3.setLayout( null );
+contentPane.add( questionPanel3 );
+
+questionLabel3 = new JLabel();
+questionLabel3.setBounds( 10, 50, 270, 20 );
+questionLabel3.setText( "Q3: Clarity? " );
+questionPanel3.add( questionLabel3 );
+
+myslider = new JSlider(JSlider.HORIZONTAL, 1, 8, 1);
+//myslider.setMajorTickSpacing(10);
+//myslider.setMinorTickSpacing(1);
+//myslider.setPaintTicks(true);
+//myslider.setPaintLabels(true);
+myslider.setBounds(10, 40, 260, 20);
+questionPanel3.add(myslider);
+
+questionPanel4 = new JPanel();
+questionPanel4.setBounds( 40, 330, 276, 75 );
+questionPanel4.setBorder( BorderFactory.createEtchedBorder() );
+questionPanel4.setLayout( null );
+contentPane.add( questionPanel4 );
+
+questionLabel4 = new JLabel();
+questionLabel4.setBounds( 10, 75, 270, 20 );
+questionLabel4.setText( "Q4: Useful? " );
+questionPanel4.add( questionLabel4 );
+
+myslider = new JSlider(JSlider.HORIZONTAL, 1, 8, 1);
+//myslider.setMajorTickSpacing(10);
+//myslider.setMinorTickSpacing(1);
+//myslider.setPaintTicks(true);
+//myslider.setPaintLabels(true);
+myslider.setBounds(10, 40, 260, 20);
+questionPanel4.add(myslider);
+
+
+//f = new JFrame ("frame");
+//JPanel teamPanel2 = new JPanel();
+//js1 = new JSlider();
+//teamPanel2.add(js1);
+//f.add(js1);
+//f.setSize(300, 300);
+//f.show();
+
+//js1 = new JSlider( "", false );
+//js1.setBounds(80, 50, 200, 200);
+//js1.setVisible(true);
+//js1.addItemListener(this);
+
+
 // set up the radio buttons for question 1
         rb1 = new JRadioButton("1", false);
         rb1.setBounds(20, 30, 40, 40);
@@ -204,7 +368,9 @@ public class Eval extends JFrame implements ActionListener, ItemListener
 //        questionPanel.add(rb2);
 //        questionPanel.add(rb3);
 
+
 // SUBMIT BUTTON SET UP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
         buttonPanel = new JPanel();
         buttonPanel.setBounds(40, 200, 276, 75);
         buttonPanel.setBorder(BorderFactory.createEtchedBorder());
@@ -261,6 +427,7 @@ public class Eval extends JFrame implements ActionListener, ItemListener
 
             updateTeams();
         }
+
 // else if(event.getSource().equals(clearButton))
 // {
 // textavgtextbox.text = "";
@@ -276,6 +443,7 @@ public class Eval extends JFrame implements ActionListener, ItemListener
 // teamavgTextBox.text = teamavg;
 // submitButton.setEnabled(true);
 // avgcalculated = true;
+
 
     }
 
@@ -312,10 +480,12 @@ public class Eval extends JFrame implements ActionListener, ItemListener
                     + ", COMMENTS = " + "'" + teamcomments
                     + "'" + "WHERE " + "TEAMS = " + "'" + myteamname + "'";
             //String sql2 = "UPDATE APP.TEAM SET Q2USEFUL = " + q2 + " WHERE " + "TEAMS = " + "'" + myteamname + "'";
+
 // String sql3;
 // String sql4;
 // String sql5;
 // String sql6 = "UPDATE APP.TEAM SET COMMENTS = " + "'" + teamcomments + "'" + " WHERE " + "TEAMS = " + "'" + myteamname + "'";
+
             myStatement.executeUpdate(sql1);
 
         } 
