@@ -10,8 +10,8 @@ import java.awt.event.*;
 import java.sql.*;
 //import java.text.*;
 import javax.swing.*;
-import javax.swing.event.*;
-//import org.apache.derby.jdbc.*;
+//import javax.swing.event.*;
+import org.apache.derby.jdbc.*;
 
 /**
  *
@@ -28,12 +28,17 @@ public class Eval extends JFrame implements ActionListener, ItemListener {
 // private JLabel courseLabel;
 // private JComboBox courseComboBox;
 // private JPanel coursePanel;
-	private JLabel questionLabel;
-	private JRadioButton rb1;
-	private JRadioButton rb2;
-	private JRadioButton rb3;
-	private JPanel questionPanel, question2Panel, question3Panel;
-	private ButtonGroup questionGroup1;
+	private JLabel questionLabel, questionLabel2, questionLabel3, questionLabel4;
+//private JRadioButton rb1;
+//private JRadioButton rb2;
+//private JRadioButton rb3;
+	private JSlider js1;
+	private JSlider js2;
+	private JSlider js3;
+	private JSlider js4;
+
+	private JPanel questionPanel, questionPanel2, questionPanel3, questionPanel4;
+//private ButtonGroup questionGroup1;
 
 	private JButton submitButton;
 	private JButton clearButton;
@@ -77,7 +82,26 @@ public class Eval extends JFrame implements ActionListener, ItemListener {
 //}
 	}
 
+//CONSTRUCTOR: WE SET UP OUR DATABASE HERE THEN MAKE A CALL
+//TO A FUNCTION CALLED CREATEUSERINTERFACE TO BUILD OUR GUI
 	public Eval(String databaseDriver, String databaseURL) {
+// establish connection to database
+		try {
+//// load Sun driver
+////Class.forName( "org.apache.derby.jdbc.ClientDriver");
+			DriverManager.registerDriver(new ClientDriver());
+//// connect to database
+			myConnection = DriverManager.getConnection(databaseURL);
+//
+//// create Statement for executing SQL
+			myStatement = myConnection.createStatement();
+		} catch (SQLException exception) {
+			System.out.println(exception.getMessage());
+		}
+//catch ( ClassNotFoundException exception )
+// {
+// exception.printStackTrace();
+//}
 
 		createUserInterface(); // set up GUI
 
@@ -107,17 +131,30 @@ public class Eval extends JFrame implements ActionListener, ItemListener {
 // set up accountNumberJComboBox
 		teamComboBox = new JComboBox();
 		teamComboBox.setBounds(150, 15, 96, 25);
-		teamComboBox.addItem("Team One");
-		teamComboBox.addItem("Team Two");
-		teamComboBox.addItem("Team Three");
-		teamComboBox.addItem("Team Four");
-		teamComboBox.addItem("Team Five");
-		teamComboBox.addItem("Team Six");
-		teamComboBox.addItem("Team Seven");
-		teamComboBox.addItem("Team Eight");
+		teamComboBox.addItem("");
 		teamComboBox.setSelectedIndex(0);
 		teamPanel.add(teamComboBox);
 
+//COURSE COMBO BOX SET UP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// set up Course Panel
+// coursePanel = new JPanel();
+// coursePanel.setBounds( 40, 70, 276, 48 );
+// coursePanel.setBorder( BorderFactory.createEtchedBorder() );
+// coursePanel.setLayout( null );
+// contentPane.add( coursePanel );
+// set up Course Label
+// courseLabel = new JLabel();
+// courseLabel.setBounds( 25, 15, 100, 20 );
+// courseLabel.setText( "Course:" );
+// coursePanel.add( courseLabel );
+// set up Course ComboBox
+// courseComboBox = new JComboBox();
+// courseComboBox.setBounds( 150, 12, 96, 25 );
+// courseComboBox.addItem( "" );
+// courseComboBox.setSelectedIndex( 0 );
+// coursePanel.add( courseComboBox );
+//RADIO BUTTON SET UP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// set up Question Panel and Radio Buttons
 		questionPanel = new JPanel();
 		questionPanel.setBounds(40, 120, 276, 75);
 		questionPanel.setBorder(BorderFactory.createEtchedBorder());
@@ -127,38 +164,69 @@ public class Eval extends JFrame implements ActionListener, ItemListener {
 // set up question1 Label
 		questionLabel = new JLabel();
 		questionLabel.setBounds(10, 15, 270, 20);
-		questionLabel.setText("Q1: How would you rate the instructors jokes?");
+		questionLabel.setText("Q1: Technical? ");
 		questionPanel.add(questionLabel);
 
+		questionPanel2 = new JPanel();
+		questionPanel2.setBounds(40, 190, 276, 75);
+		questionPanel2.setBorder(BorderFactory.createEtchedBorder());
+		questionPanel2.setLayout(null);
+		contentPane.add(questionPanel2);
+
+		questionLabel2 = new JLabel();
+		questionLabel2.setBounds(10, 35, 270, 20);
+		questionLabel2.setText("Q2: Useful? ");
+		questionPanel2.add(questionLabel2);
+
+		questionPanel3 = new JPanel();
+		questionPanel3.setBounds(40, 260, 276, 75);
+		questionPanel3.setBorder(BorderFactory.createEtchedBorder());
+		questionPanel3.setLayout(null);
+		contentPane.add(questionPanel3);
+
+		questionLabel3 = new JLabel();
+		questionLabel3.setBounds(10, 35, 270, 20);
+		questionLabel3.setText("Q3: Clarity? ");
+		questionPanel3.add(questionLabel3);
+
+		questionPanel4 = new JPanel();
+		questionPanel4.setBounds(40, 330, 276, 75);
+		questionPanel4.setBorder(BorderFactory.createEtchedBorder());
+		questionPanel4.setLayout(null);
+		contentPane.add(questionPanel4);
+
+		questionLabel4 = new JLabel();
+		questionLabel4.setBounds(10, 35, 270, 20);
+		questionLabel4.setText("Q4: Useful? ");
+		questionPanel4.add(questionLabel4);
+
+		js1 = new JSlider();
+		js1.setBounds(80, 50, 200, 200);
+		js1.setVisible(true);
+//js1.addItemListener(this);
+
 // set up the radio buttons for question 1
-		rb1 = new JRadioButton("1", false);
-		rb1.setBounds(20, 30, 40, 40);
-		rb1.setVisible(true);
-		rb1.addItemListener(this);
-
-		rb2 = new JRadioButton("2", false);
-		rb2.setBounds(80, 30, 40, 40);
-		rb2.setVisible(true);
-		rb2.addItemListener(this);
-
-		rb3 = new JRadioButton("3", false);
-		rb3.setBounds(140, 30, 40, 40);
-		rb3.setVisible(true);
-		rb3.addItemListener(this);
-
+//rb1 = new JRadioButton( "1", false );
+//rb1.setBounds(20, 30, 40, 40 );
+//rb1.setVisible(true);
+//rb1.addItemListener(this);
+//rb2 = new JRadioButton("2", false);
+//rb2.setBounds(80, 30, 40, 40 );
+//rb2.setVisible(true);
+//rb2.addItemListener(this);
+//rb3 = new JRadioButton( "3", false );
+//rb3.setBounds(140, 30, 40, 40 );
+//rb3.setVisible(true);
+//rb3.addItemListener(this);
 // create logical relationship between JRadioButtons
-		questionGroup1 = new ButtonGroup();
-		questionGroup1.add(rb1);
-		questionGroup1.add(rb2);
-		questionGroup1.add(rb3);
-
+//questionGroup1 = new ButtonGroup();
+//questionGroup1.add( rb1 );
+//questionGroup1.add( rb2 );
+//questionGroup1.add( rb3 );
 // add radio button to the panel
-		questionPanel.add(rb1);
-		questionPanel.add(rb2);
-		questionPanel.add(rb3);
-
-		
-
+//questionPanel.add( rb1 );
+//questionPanel.add( rb2 );
+//questionPanel.add( rb3 );
 // SUBMIT BUTTON SET UP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		buttonPanel = new JPanel();
 		buttonPanel.setBounds(40, 200, 276, 75);
@@ -195,42 +263,129 @@ public class Eval extends JFrame implements ActionListener, ItemListener {
 		if (event.getSource().equals(submitButton)) {
 			myteamname = (String) teamComboBox.getSelectedItem();
 
-			if (rb1.isSelected()) {
-				q1 = Integer.parseInt(rb1.getText());
-			} else if (rb2.isSelected()) {
-				q1 = Integer.parseInt(rb2.getText());
-			} else if (rb3.isSelected()) {
-				q1 = Integer.parseInt(rb3.getText());
-			}
-
-			q2 = 8;
-			q3 = 2;
-			q4 = 5;
-			teamavg = ((q1 + q2 + q3 + q4) / 4);
-			teamcomments = "Not a bad presentation not a good one either";
-
+//if ( rb1.isSelected())
+//{
+//q1 = Integer.parseInt(rb1.getText());
+//}
+//else if (rb2.isSelected())
+//{
+//q1 = Integer.parseInt(rb2.getText());
+//}
+//else if (rb3.isSelected())
+//{
+//q1 = Integer.parseInt(rb3.getText());
+//}
+//q2 = 8;
+//q3 = 2;
+//q4 = 5;
+//teamavg = ((q1+q2+q3+q4)/4);
+//teamcomments = "Not a bad presentation not a good one either";
 			updateTeams();
 		}
+// else if(event.getSource().equals(clearButton))
+// {
+// textavgtextbox.text = "";
+// submitButton.setEnabled(false);
+// }
+// else if(event.getSource().equals(teamavgButton))
+// {
+// int tempval1 = slidertechnical.getValue();
+// int tempval2 = slideruse.getValue();
+// int tempval3 = sliderclarity.getValue();
+// int tempval4 = slideroverall.getValue();
+// teamavg = (double)(tempval1 + teampval2 + tempval3 + tempval4)/4.0
+// teamavgTextBox.text = teamavg;
+// submitButton.setEnabled(true);
+// avgcalculated = true;
+
 	}
 
 	@Override
 	public void itemStateChanged(ItemEvent event) {
 
-		if (event.getSource() == rb1 && event.getStateChange() == ItemEvent.SELECTED) {
-			q1 = Integer.parseInt(rb1.getText());
-		} else if (event.getSource() == rb2 && event.getStateChange() == ItemEvent.SELECTED) {
-			q1 = Integer.parseInt(rb2.getText());
-		} else if (event.getSource() == rb3 && event.getStateChange() == ItemEvent.SELECTED) {
-			q1 = Integer.parseInt(rb3.getText());
-		} else if (event.getSource() == rb1 && event.getStateChange() == ItemEvent.DESELECTED) {
-			JOptionPane.showMessageDialog(null, "Eggs are not supposed to be green.");
-		}
+//if ( event.getSource() == rb1 && event.getStateChange() == ItemEvent.SELECTED)
+//{
+//q1 = Integer.parseInt(rb1.getText());
+//}
+//else if (event.getSource() == rb2 && event.getStateChange() == ItemEvent.SELECTED)
+//{
+//q1 = Integer.parseInt(rb2.getText());
+//}
+//else if (event.getSource() == rb3 && event.getStateChange() == ItemEvent.SELECTED)
+//{
+//q1 = Integer.parseInt(rb3.getText());
+//}
+//else if( event.getSource() == rb1 && event.getStateChange() == ItemEvent.DESELECTED)
+//{
+//JOptionPane.showMessageDialog(null, "Eggs are not supposed to be green.");
+//}
 	}
 
 	private void updateTeams() {
+// update balance in database
+		try {
+// Below is an example of creating a SQL statement that updated more than a single field in one statement.
+			String sql1 = "UPDATE APP.TEAM SET Q1 = " + q1
+				+ ", Q2 = " + q2
+				+ ", Q3 = " + q3
+				+ ", Q4 = " + q4
+				+ ", TEAMAVG = " + teamavg
+				+ ", COMMENTS = " + "'" + teamcomments
+				+ "'" + "WHERE " + "TEAMS = " + "'" + myteamname + "'";
+//			String sql2 = "UPDATE APP.TEAM SET Q2USEFUL = " + q2 + " WHERE " + "TEAMS = " + "'" + myteamname + "'";
+// String sql3;
+// String sql4;
+// String sql5;
+// String sql6 = "UPDATE APP.TEAM SET COMMENTS = " + "'" + teamcomments + "'" + " WHERE " + "TEAMS = " + "'" + myteamname + "'";
+			myStatement.executeUpdate(sql1);
+
+		} catch (SQLException exception) {
+			System.out.println(exception.getMessage());
+		}
 
 	} // end method updateBalance
 
 	private void loadTeams() {
+// get all account numbers from database
+		try {
+
+//myresultset = mystatement.executequery( "select distinct lastname from insteval" );
+			myResultSet = myStatement.executeQuery("SELECT TEAMS FROM APP.TEAM");
+// add account numbers to accountnumberjcombobox
+			while (myResultSet.next()) {
+//instructorcombobox.additem( myresultset.getstring( "lastname" ) );
+				teamComboBox.addItem(myResultSet.getString("teams"));
+			}
+
+			myResultSet.close(); // close myresultset
+
+		} // end try
+		catch (SQLException exception) {
+			System.out.println(exception.getMessage());
+		}
 	}
+
+// private void loadCourses()
+// {
+// // get all account numbers from database
+// try
+// {
+//
+// myResultSet = myStatement.executeQuery( "SELECT DISTINCT course FROM APP.TEAMEVAL");
+// //myResultSet = myStatement.executeQuery( "SELECT DISTINCT course FROM InstEval");
+// // add account numbers to accountNumberJComboBox
+// while ( myResultSet.next() )
+// {
+// courseComboBox.addItem(
+// myResultSet.getString( "course" ) );
+// }
+//
+// myResultSet.close(); // close myResultSet
+//
+// } // end try
+// catch ( SQLException exception )
+// {
+// exception.printStackTrace();
+// }
+// }
 }
