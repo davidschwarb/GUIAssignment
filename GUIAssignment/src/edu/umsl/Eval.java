@@ -33,11 +33,11 @@ private JPanel teamPanel;
 // private JPanel coursePanel;
 
 
-private JLabel questionLabel;
+private JLabel questionLabel, questionLabel2, questionLabel3, questionLabel4;
 private JRadioButton rb1;
 private JRadioButton rb2;
 private JRadioButton rb3;
-private JPanel questionPanel;
+private JPanel questionPanel, questionPanel2, questionPanel3, questionPanel4;
 private ButtonGroup questionGroup1;
 
 
@@ -181,8 +181,41 @@ contentPane.add( questionPanel );
 // set up question1 Label
 questionLabel = new JLabel();
 questionLabel.setBounds( 10, 15, 270, 20 );
-questionLabel.setText( "Q1: How would you rate the instructors jokes?" );
+questionLabel.setText( "Q1: Technical? " );
 questionPanel.add( questionLabel );
+
+questionPanel2 = new JPanel();
+questionPanel2.setBounds( 40, 190, 276, 75 );
+questionPanel2.setBorder( BorderFactory.createEtchedBorder() );
+questionPanel2.setLayout( null );
+contentPane.add( questionPanel2 );
+
+questionLabel2 = new JLabel();
+questionLabel2.setBounds( 10, 35, 270, 20 );
+questionLabel2.setText( "Q2: Useful? " );
+questionPanel2.add( questionLabel2 );
+
+questionPanel3 = new JPanel();
+questionPanel3.setBounds( 40, 260, 276, 75 );
+questionPanel3.setBorder( BorderFactory.createEtchedBorder() );
+questionPanel3.setLayout( null );
+contentPane.add( questionPanel3 );
+
+questionLabel3 = new JLabel();
+questionLabel3.setBounds( 10, 35, 270, 20 );
+questionLabel3.setText( "Q3: Clarity? " );
+questionPanel3.add( questionLabel3 );
+
+questionPanel4 = new JPanel();
+questionPanel4.setBounds( 40, 330, 276, 75 );
+questionPanel4.setBorder( BorderFactory.createEtchedBorder() );
+questionPanel4.setLayout( null );
+contentPane.add( questionPanel4 );
+
+questionLabel4 = new JLabel();
+questionLabel4.setBounds( 10, 35, 270, 20 );
+questionLabel4.setText( "Q4: Useful? " );
+questionPanel4.add( questionLabel4 );
 
 // set up the radio buttons for question 1
 rb1 = new JRadioButton( "1", false );
