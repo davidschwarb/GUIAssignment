@@ -49,7 +49,7 @@ private JPanel questionPanel, questionPanel2, questionPanel3, questionPanel4;
 //private ButtonGroup questionGroup1;
 
 
-private JButton submitButton;
+//private JButton submitButton;
 private JButton clearButton;
 private JPanel buttonPanel;
 
@@ -226,7 +226,7 @@ questionPanel3.setLayout( null );
 contentPane.add( questionPanel3 );
 
 questionLabel3 = new JLabel();
-questionLabel3.setBounds( 10, 35, 270, 20 );
+questionLabel3.setBounds( 10, 50, 270, 20 );
 questionLabel3.setText( "Q3: Clarity? " );
 questionPanel3.add( questionLabel3 );
 
@@ -245,7 +245,7 @@ questionPanel4.setLayout( null );
 contentPane.add( questionPanel4 );
 
 questionLabel4 = new JLabel();
-questionLabel4.setBounds( 10, 35, 270, 20 );
+questionLabel4.setBounds( 10, 75, 270, 20 );
 questionLabel4.setText( "Q4: Useful? " );
 questionPanel4.add( questionLabel4 );
 
@@ -299,17 +299,17 @@ questionPanel4.add(myslider);
 //questionPanel.add( rb3 );
 
 // SUBMIT BUTTON SET UP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-buttonPanel = new JPanel();
-buttonPanel.setBounds( 40, 200, 276, 75 );
-buttonPanel.setBorder( BorderFactory.createEtchedBorder() );
-buttonPanel.setLayout( null );
-contentPane.add( buttonPanel );
-
-submitButton = new JButton( "SUBMIT" );
-submitButton.setBounds(80, 15, 100, 50);
-submitButton.setVisible(true);
-buttonPanel.add(submitButton);
-submitButton.addActionListener(this);
+//buttonPanel = new JPanel();
+//buttonPanel.setBounds( 40, 200, 276, 75 );
+//buttonPanel.setBorder( BorderFactory.createEtchedBorder() );
+//buttonPanel.setLayout( null );
+//contentPane.add( buttonPanel );
+//
+//submitButton = new JButton( "SUBMIT" );
+//submitButton.setBounds(80, 15, 100, 50);
+//submitButton.setVisible(true);
+//buttonPanel.add(submitButton);
+//submitButton.addActionListener(this);
 
 
 
@@ -334,32 +334,32 @@ public void actionPerformed(ActionEvent event)
 //q1 = sliderq1.getValue();
 
 // courseName = (String)courseComboBox.getSelectedItem();
-if(event.getSource().equals(submitButton))
-{
-myteamname = (String)teamComboBox.getSelectedItem();
-
-
-//if ( rb1.isSelected())
+//if(event.getSource().equals(submitButton))
 //{
-//q1 = Integer.parseInt(rb1.getText());
+//myteamname = (String)teamComboBox.getSelectedItem();
+//
+//
+////if ( rb1.isSelected())
+////{
+////q1 = Integer.parseInt(rb1.getText());
+////}
+////else if (rb2.isSelected())
+////{
+////q1 = Integer.parseInt(rb2.getText());
+////}
+////else if (rb3.isSelected())
+////{
+////q1 = Integer.parseInt(rb3.getText());
+////}
+//
+////q2 = 8;
+////q3 = 2;
+////q4 = 5;
+////teamavg = ((q1+q2+q3+q4)/4);
+////teamcomments = "Not a bad presentation not a good one either";
+//
+//updateTeams();
 //}
-//else if (rb2.isSelected())
-//{
-//q1 = Integer.parseInt(rb2.getText());
-//}
-//else if (rb3.isSelected())
-//{
-//q1 = Integer.parseInt(rb3.getText());
-//}
-
-//q2 = 8;
-//q3 = 2;
-//q4 = 5;
-//teamavg = ((q1+q2+q3+q4)/4);
-//teamcomments = "Not a bad presentation not a good one either";
-
-updateTeams();
-}
 // else if(event.getSource().equals(clearButton))
 // {
 // textavgtextbox.text = "";
