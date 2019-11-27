@@ -1,0 +1,204 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package edu.umsl;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.*;
+import java.util.Hashtable;
+import javax.swing.*;
+//import javax.swing.event.*;​
+/**
+ *
+ * @author David
+ */
+public class Eval extends JFrame implements ActionListener, ItemListener {
+
+    JSlider slider;
+    JButton submit, clear;
+
+    JLabel teamLabel, q1lab, q2lab, q3lab, q4lab, q5lab, commentsLabel, avgLabel;
+    JComboBox teamComboBox;
+    
+    JPanel buttonPanel;
+    
+    JTextArea commentTextArea;
+    JTextField mytext;
+
+    Eval(String databaseDriver, String databaseURL) {
+        this.setTitle("EVALUATION");
+
+        createUserInterface();
+
+        pack();
+
+        this.setLocationRelativeTo(null);
+        this.setSize(750, 750);
+        this.setVisible(true);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    public static void main(String[] args) {
+        new Eval("", "");
+    }
+
+    public void createUserInterface() {
+
+        JPanel panel = new JPanel(new BorderLayout());
+        this.add(panel);
+
+        JPanel panelLabels = new JPanel(new GridBagLayout());
+        panel.add(panelLabels);
+        
+        JPanel commentsPanel = new JPanel(new BorderLayout());
+        
+        panel.add(commentsPanel, BorderLayout.SOUTH);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        teamLabel = new JLabel("Select the team:");
+
+        teamComboBox = new JComboBox();
+        teamComboBox.addItem("");
+        teamComboBox.setSelectedIndex(0);
+
+        q1lab = new JLabel("Q1: Technical?");
+        q2lab = new JLabel("Q2: Useful?");
+        q3lab = new JLabel("Q3: Clarity?");
+        q4lab = new JLabel("Q4: Overall?");
+        commentsLabel = new JLabel("Comments:");
+        
+        commentTextArea = new JTextArea("Enter comments about the presentation here.", 3, 17);
+        commentTextArea.setLineWrap(true);
+        
+        JSlider q1Slider = new JSlider(JSlider.HORIZONTAL, 1, 8, 1);
+        JSlider q2Slider = new JSlider(JSlider.HORIZONTAL, 1, 8, 1);
+        JSlider q3Slider = new JSlider(JSlider.HORIZONTAL, 1, 8, 1);
+        JSlider q4Slider = new JSlider(JSlider.HORIZONTAL, 1, 8, 1);
+        
+        Hashtable<Integer, JLabel> labels = new Hashtable<>();
+        labels.put(1, new JLabel("C-"));
+        labels.put(2, new JLabel("C"));
+        labels.put(3, new JLabel("C+"));
+        labels.put(4, new JLabel("B-"));
+        labels.put(5, new JLabel("B"));
+        labels.put(6, new JLabel("B+"));
+        labels.put(7, new JLabel("A-"));
+        labels.put(8, new JLabel("A"));
+        
+        
+        q1Slider.setLabelTable(labels);
+        q1Slider.setPaintLabels(true);
+        q1Slider.setMinorTickSpacing(1);
+        q1Slider.setMajorTickSpacing(1);
+        q1Slider.setPaintTicks(true);
+        
+        q2Slider.setLabelTable(labels);
+        q2Slider.setPaintLabels(true);
+        q2Slider.setMinorTickSpacing(1);
+        q2Slider.setMajorTickSpacing(1);
+        q2Slider.setPaintTicks(true);
+
+        q3Slider.setLabelTable(labels);
+        q3Slider.setPaintLabels(true);
+        q3Slider.setMinorTickSpacing(1);
+        q3Slider.setMajorTickSpacing(1);
+        q3Slider.setPaintTicks(true);
+        
+        q4Slider.setLabelTable(labels);
+        q4Slider.setPaintLabels(true);
+        q4Slider.setMinorTickSpacing(1);
+        q4Slider.setMajorTickSpacing(1);
+        q4Slider.setPaintTicks(true);
+        
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.LINE_START;
+        gbc.insets = new Insets(20, 10, 20, 20);
+
+        panelLabels.add(teamLabel, gbc);
+        
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        panelLabels.add(teamComboBox, gbc);
+
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+
+        panelLabels.add(q1lab, gbc);
+
+        gbc.gridx = 1;
+        panelLabels.add(q1Slider, gbc);
+        
+        gbc.gridy = 2;
+        gbc.gridx = 0;
+        panelLabels.add(q2lab, gbc);
+        
+        gbc.gridx = 1;
+        panelLabels.add(q2Slider, gbc);
+        
+        gbc.gridy = 3;
+        gbc.gridx = 0;
+        panelLabels.add(q3lab, gbc);
+        
+        gbc.gridx = 1;
+        panelLabels.add(q3Slider, gbc);
+        
+        gbc.gridy = 4;
+        gbc.gridx = 0;
+        panelLabels.add(q4lab, gbc);
+        
+        gbc.gridx = 1;
+        panelLabels.add(q4Slider, gbc);
+        
+        
+        buttonPanel = new JPanel();
+        buttonPanel.setBounds( 40, 100, 400, 200 );
+        buttonPanel.setBorder( BorderFactory.createEtchedBorder() );
+        buttonPanel.setLayout( null );
+        buttonPanel.add( buttonPanel );
+
+        submit = new JButton( "SUBMIT" );
+        submit.setBounds(80, 80, 100, 50);
+        submit.setVisible(true);
+        buttonPanel.add(submit);
+        submit.addActionListener(this);
+        
+        
+        mytext = new JTextField();
+        mytext.setBounds(300, 20, 50, 40);
+        buttonPanel.add(mytext);
+        
+
+        BorderLayout bl = new BorderLayout();
+//        bl.setHgap(50);
+        commentsPanel.add(commentsLabel);
+        
+
+        commentsPanel.add(commentTextArea);
+        
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent event) {
+        
+        if(event.getSource().equals(submit))
+        {
+        int x = slider.getValue();
+        mytext.setText(Integer.toString(x));
+
+        }
+    }
+
+    @Override
+    public void itemStateChanged(ItemEvent ie) {
+
+    }
+}
