@@ -23,7 +23,7 @@ public class Eval extends JFrame implements ActionListener, ItemListener {
     JLabel teamLabel, q1lab, q2lab, q3lab, q4lab, q5lab, commentsLabel, avgLabel;
     JComboBox teamComboBox;
     
-    JPanel buttonPanel;
+    //JPanel buttonPanel;
     
     JTextArea commentTextArea;
     JTextField mytext;
@@ -73,6 +73,21 @@ public class Eval extends JFrame implements ActionListener, ItemListener {
         
         commentTextArea = new JTextArea("Enter comments about the presentation here.", 3, 17);
         commentTextArea.setLineWrap(true);
+        
+        
+        JPanel buttonPanel = new JPanel();
+        
+        submit = new JButton( "SUBMIT" );
+        submit.setBounds(80, 80, 100, 50);
+        submit.setVisible(true);
+        buttonPanel.add(submit);
+        submit.addActionListener(this);
+        
+        JPanel contentPane = new JPanel();
+        
+        mytext = new JTextField();
+        mytext.setBounds(300, 20, 50, 40);
+        contentPane.add(mytext);
         
         JSlider q1Slider = new JSlider(JSlider.HORIZONTAL, 1, 8, 1);
         JSlider q2Slider = new JSlider(JSlider.HORIZONTAL, 1, 8, 1);
@@ -165,16 +180,6 @@ public class Eval extends JFrame implements ActionListener, ItemListener {
         buttonPanel.setLayout( null );
         buttonPanel.add( buttonPanel );
 
-        submit = new JButton( "SUBMIT" );
-        submit.setBounds(80, 80, 100, 50);
-        submit.setVisible(true);
-        buttonPanel.add(submit);
-        submit.addActionListener(this);
-        
-        
-        mytext = new JTextField();
-        mytext.setBounds(300, 20, 50, 40);
-        buttonPanel.add(mytext);
         
 
         BorderLayout bl = new BorderLayout();
