@@ -1,394 +1,389 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package edu.umsl;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
-//import java.text.*;
+import java.util.Hashtable;
 import javax.swing.*;
-import javax.swing.event.*;
-//import org.apache.derby.jdbc.*;
-
+import org.apache.derby.jdbc.*;
 
 /**
-*
-* @author brilaw
-*/
-public class Eval extends JFrame implements ActionListener, ItemListener
-{
-//DECLARE THE ELEMENTS OR OBJECTS THAT YOU WILL PUT IN YOUR FRAME
-//NOTICE HOW A PANEL IS CREATED FOR EACH ONE THIS WILL MAKE IT EASIER BUILD
+ *
+ * @author David
+ */
+public class Eval extends JFrame implements ActionListener, ItemListener {
+    
+    private boolean clearedStart = false;
+    private Connection myConnection;
+    private Statement myStatement;
+    private ResultSet myResultSet;
 
-public JLabel teamLabel;
-private JComboBox teamComboBox;
-private JPanel teamPanel;
+    private double average;
+    private boolean displayingDecimal = false;
 
+    JSlider slider;
+    JButton submit, clear, calcAvg, toggleDisplay;
 
-// private JLabel courseLabel;
-// private JComboBox courseComboBox;
-// private JPanel coursePanel;
+    JLabel teamLabel, q1lab, q2lab, q3lab, q4lab, q5lab, commentsLabel, avgLabel;
+    JComboBox teamComboBox;
 
+    JTextArea commentTextArea;
+    JTextField avgTextField;
 
-private JLabel questionLabel;
-private JRadioButton rb1;
-private JRadioButton rb2;
-private JRadioButton rb3;
-private JPanel questionPanel;
-private ButtonGroup questionGroup1;
+    JSlider q1Slider, q2Slider, q3Slider, q4Slider;
 
+    Eval(String databaseDriver, String databaseURL) {
+        this.setTitle("EVALUATION");
 
-private JButton submitButton;
-private JButton clearButton;
-private JPanel buttonPanel;
+        try {
+            // load Sun driver
+            //Class.forName( "org.apache.derby.jdbc.ClientDriver");
+            DriverManager.registerDriver(new ClientDriver());
+            // connect to database
+            myConnection = DriverManager.getConnection(databaseURL);
 
-//instance variables to hold our data from the gui object to update the database
-String myteamname;
-// String courseName;
-int q1;
-int q2;
-int q3;
-int q4;
-double teamavg;
-boolean avgcalculated;
-String teamcomments;
-// instance variables used to manipulate database
-private Connection myConnection;
-private Statement myStatement;
-private ResultSet myResultSet;
+            // create Statement for executing SQL
+            myStatement = myConnection.createStatement();
+        } catch (SQLException exception) {
+            System.out.println(exception.getMessage());
+        }
 
+        createUserInterface();
 
+        pack();
 
-//MAIN METHOD: NOTICE WE TAKE IN THE ARGUMENTS THAT ARE
-//PASSED IN AND INSTANTIATE OUR CLASS WITH THEM
-public static void main(String args[])
-{
-// check command-line arguments
-//if ( args.length == 2 )
-//{
-// get command-line arguments
-String databaseDriver = "org.apache.derby.jdbc.ClientDriver";
-//String databaseDriver = "sun.jdbc.odbc.JdbcOdbcDriver";
-//String databaseURL = "jdbc:derby://localhost:1527/PureEval";
-String databaseURL = "jdbc:derby://localhost:1527/Eval";
+        this.setLocationRelativeTo(null);
+        this.setSize(750, 750);
+        this.setVisible(true);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
 
+    public static void main(String[] args) {
+        new Eval("org.apache.derby.jdbc.ClientDriver", "jdbc:derby://localhost:1527/Eval");
+    }
 
-// create new Eval
-Eval eval = new Eval( databaseDriver, databaseURL );
-//eval.createUserInterface();
-eval.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE );
-//}
-//else // invalid command-line arguments
-//{
-// System.out.println( "Usage: java EVAL needs databaseDriver databaseURL" );
-//}
-}
+    public void createUserInterface() {
 
-//CONSTRUCTOR: WE SET UP OUR DATABASE HERE THEN MAKE A CALL
-//TO A FUNCTION CALLED CREATEUSERINTERFACE TO BUILD OUR GUI
-public Eval(String databaseDriver, String databaseURL)
-{
-// establish connection to database
-//try
-//{
-//// load Sun driver
-////Class.forName( "org.apache.derby.jdbc.ClientDriver");
-//DriverManager.registerDriver(new ClientDriver());
-//// connect to database
-//myConnection = DriverManager.getConnection( "jdbc:derby://localhost:1527/Eval" );
-//
-//// create Statement for executing SQL
-//myStatement = myConnection.createStatement();
-//}
-//catch ( SQLException exception )
-//{
-//exception.printStackTrace();
-//}
-//catch ( ClassNotFoundException exception )
-// {
-// exception.printStackTrace();
-//}
+        JPanel panel = new JPanel(new GridBagLayout());
+        this.add(panel);
 
-createUserInterface(); // set up GUI
+        GridBagConstraints panelGBC = new GridBagConstraints();
 
-}
+        JPanel panelLabels = new JPanel(new GridBagLayout());
+
+        JPanel commentsPanel = new JPanel(new GridBagLayout());
+
+        JPanel avgPanel = new JPanel(new GridBagLayout());
+
+        JPanel buttonPanel = new JPanel(new GridBagLayout());
+
+        panelGBC.gridy = 0;
+
+        panel.add(panelLabels, panelGBC);
+
+        panelGBC.gridy = 1;
+
+        panel.add(commentsPanel, panelGBC);
+
+        panelGBC.gridy = 2;
+
+        panel.add(avgPanel, panelGBC);
+
+        panelGBC.gridy = 3;
+
+        panel.add(buttonPanel, panelGBC);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        teamLabel = new JLabel("Select the team:");
+
+        teamComboBox = new JComboBox();
+        teamComboBox.addItem("");
+        teamComboBox.setSelectedIndex(0);
 
 
 
-private void createUserInterface()
-{
-// get content pane for attaching GUI components
-Container contentPane = getContentPane();
+        q1lab = new JLabel("Q1: Technical?");
+        q2lab = new JLabel("Q2: Useful?");
+        q3lab = new JLabel("Q3: Clarity?");
+        q4lab = new JLabel("Q4: Overall?");
+        commentsLabel = new JLabel("Comments:");
 
-// enable explicit positioning of GUI components
-contentPane.setLayout( null );
+        commentTextArea = new JTextArea("\n           Enter comments about the presentation here.", 3, 30);
+        commentTextArea.setLineWrap(true);
 
-// INSTRUCTOR COMBO BOX SET UP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// set up Instructor Panel
-teamPanel = new JPanel();
-teamPanel.setBounds(40, 20, 276, 48 );
-teamPanel.setBorder( BorderFactory.createEtchedBorder() );
-teamPanel.setLayout( null );
-contentPane.add( teamPanel );
+        commentTextArea.addFocusListener(new FocusListener() {
+            @Override
+            public void focusLost(FocusEvent arg0) {
 
-// set up Instructor Label
-teamLabel = new JLabel();
-teamLabel.setBounds( 25, 15, 100, 20 );
-teamLabel.setText( "TEAMS:" );
-teamPanel.add( teamLabel );
+            }
+            
+            @Override
+            public void focusGained(FocusEvent arg0) {
+                if(!clearedStart) {
+                    commentTextArea.setText("");
+                    clearedStart = true;
+                }
+            }
+        });
+        calcAvg = new JButton("CALCULATE AVERAGE");
+        calcAvg.addActionListener(this);
 
-// set up accountNumberJComboBox
-teamComboBox = new JComboBox();
-teamComboBox.setBounds( 150, 15, 96, 25 );
-teamComboBox.addItem( "" );
-teamComboBox.setSelectedIndex( 0 );
-teamPanel.add( teamComboBox );
+        submit = new JButton("SUBMIT");
+        submit.setBounds(80, 80, 100, 50);
+        submit.setVisible(true);
+        submit.addActionListener(this);
+        submit.setEnabled(false);
 
+        clear = new JButton("CLEAR");
+        clear.setBounds(80, 80, 100, 50);
+        clear.setVisible(true);
+        clear.addActionListener(this);
 
-//COURSE COMBO BOX SET UP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// set up Course Panel
-// coursePanel = new JPanel();
-// coursePanel.setBounds( 40, 70, 276, 48 );
-// coursePanel.setBorder( BorderFactory.createEtchedBorder() );
-// coursePanel.setLayout( null );
-// contentPane.add( coursePanel );
+        toggleDisplay = new JButton("Display Decimal");
+        toggleDisplay.addActionListener(this);
 
-// set up Course Label
-// courseLabel = new JLabel();
-// courseLabel.setBounds( 25, 15, 100, 20 );
-// courseLabel.setText( "Course:" );
-// coursePanel.add( courseLabel );
+        avgTextField = new JTextField(10);
+        avgTextField.setFocusable(false);
+        avgTextField.setHorizontalAlignment(JTextField.HORIZONTAL);
 
-// set up Course ComboBox
-// courseComboBox = new JComboBox();
-// courseComboBox.setBounds( 150, 12, 96, 25 );
-// courseComboBox.addItem( "" );
-// courseComboBox.setSelectedIndex( 0 );
-// coursePanel.add( courseComboBox );
+        q1Slider = new JSlider(JSlider.HORIZONTAL, 1, 8, 1);
+        q2Slider = new JSlider(JSlider.HORIZONTAL, 1, 8, 1);
+        q3Slider = new JSlider(JSlider.HORIZONTAL, 1, 8, 1);
+        q4Slider = new JSlider(JSlider.HORIZONTAL, 1, 8, 1);
 
+        Hashtable<Integer, JLabel> labels = new Hashtable<>();
+        labels.put(1, new JLabel("C-"));
+        labels.put(2, new JLabel("C"));
+        labels.put(3, new JLabel("C+"));
+        labels.put(4, new JLabel("B-"));
+        labels.put(5, new JLabel("B"));
+        labels.put(6, new JLabel("B+"));
+        labels.put(7, new JLabel("A-"));
+        labels.put(8, new JLabel("A"));
 
-//RADIO BUTTON SET UP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// set up Question Panel and Radio Buttons
-questionPanel = new JPanel();
-questionPanel.setBounds( 40, 120, 276, 75 );
-questionPanel.setBorder( BorderFactory.createEtchedBorder() );
-questionPanel.setLayout( null );
-contentPane.add( questionPanel );
+        q1Slider.setLabelTable(labels);
+        q1Slider.setPaintLabels(true);
+        q1Slider.setMinorTickSpacing(1);
+        q1Slider.setMajorTickSpacing(1);
+        q1Slider.setPaintTicks(true);
 
-// set up question1 Label
-questionLabel = new JLabel();
-questionLabel.setBounds( 10, 15, 270, 20 );
-questionLabel.setText( "Q1: How would you rate the instructors jokes?" );
-questionPanel.add( questionLabel );
+        q2Slider.setLabelTable(labels);
+        q2Slider.setPaintLabels(true);
+        q2Slider.setMinorTickSpacing(1);
+        q2Slider.setMajorTickSpacing(1);
+        q2Slider.setPaintTicks(true);
 
-// set up the radio buttons for question 1
-rb1 = new JRadioButton( "1", false );
-rb1.setBounds(20, 30, 40, 40 );
-rb1.setVisible(true);
-rb1.addItemListener(this);
+        q3Slider.setLabelTable(labels);
+        q3Slider.setPaintLabels(true);
+        q3Slider.setMinorTickSpacing(1);
+        q3Slider.setMajorTickSpacing(1);
+        q3Slider.setPaintTicks(true);
 
-rb2 = new JRadioButton("2", false);
-rb2.setBounds(80, 30, 40, 40 );
-rb2.setVisible(true);
-rb2.addItemListener(this);
+        q4Slider.setLabelTable(labels);
+        q4Slider.setPaintLabels(true);
+        q4Slider.setMinorTickSpacing(1);
+        q4Slider.setMajorTickSpacing(1);
+        q4Slider.setPaintTicks(true);
 
-rb3 = new JRadioButton( "3", false );
-rb3.setBounds(140, 30, 40, 40 );
-rb3.setVisible(true);
-rb3.addItemListener(this);
+        avgLabel = new JLabel("Computed average from questions above:");
 
-// create logical relationship between JRadioButtons
-questionGroup1 = new ButtonGroup();
-questionGroup1.add( rb1 );
-questionGroup1.add( rb2 );
-questionGroup1.add( rb3 );
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.LINE_START;
+        gbc.insets = new Insets(20, 10, 20, 20);
 
-// add radio button to the panel
-questionPanel.add( rb1 );
-questionPanel.add( rb2 );
-questionPanel.add( rb3 );
+        panelLabels.add(teamLabel, gbc);
 
-// SUBMIT BUTTON SET UP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-buttonPanel = new JPanel();
-buttonPanel.setBounds( 40, 200, 276, 75 );
-buttonPanel.setBorder( BorderFactory.createEtchedBorder() );
-buttonPanel.setLayout( null );
-contentPane.add( buttonPanel );
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-submitButton = new JButton( "SUBMIT" );
-submitButton.setBounds(80, 15, 100, 50);
-submitButton.setVisible(true);
-buttonPanel.add(submitButton);
-submitButton.addActionListener(this);
+        panelLabels.add(teamComboBox, gbc);
 
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
 
+        panelLabels.add(q1lab, gbc);
 
-JSlider myslider = new JSlider(JSlider.HORIZONTAL, 1, 5, 1);
+        gbc.gridx = 1;
+        panelLabels.add(q1Slider, gbc);
 
-myslider.setBounds(80, 50, 200, 200);
-buttonPanel.add(myslider);
-//read account numbers from database and
-// place them in accountNumberJComboBox
-loadTeams();
-//loadCourses();
+        gbc.gridy = 2;
+        gbc.gridx = 0;
+        panelLabels.add(q2lab, gbc);
 
-setTitle( "EVAL" ); // set title bar string
-setSize( 375, 410 ); // set window size
-setVisible( true ); // display window
-}
+        gbc.gridx = 1;
+        panelLabels.add(q2Slider, gbc);
 
-//OVERRIDING THIS FUNCTION BECAUSE OUR CLASS IMPLEMENTS THE ACTION LISTENER
-@Override
-public void actionPerformed(ActionEvent event)
-{
-//q1 = sliderq1.getValue();
+        gbc.gridy = 3;
+        gbc.gridx = 0;
+        panelLabels.add(q3lab, gbc);
 
-// courseName = (String)courseComboBox.getSelectedItem();
-if(event.getSource().equals(submitButton))
-{
-myteamname = (String)teamComboBox.getSelectedItem();
+        gbc.gridx = 1;
+        panelLabels.add(q3Slider, gbc);
 
+        gbc.gridy = 4;
+        gbc.gridx = 0;
+        panelLabels.add(q4lab, gbc);
 
-if ( rb1.isSelected())
-{
-q1 = Integer.parseInt(rb1.getText());
-}
-else if (rb2.isSelected())
-{
-q1 = Integer.parseInt(rb2.getText());
-}
-else if (rb3.isSelected())
-{
-q1 = Integer.parseInt(rb3.getText());
-}
+        gbc.gridx = 1;
+        panelLabels.add(q4Slider, gbc);
 
-q2 = 8;
-q3 = 2;
-q4 = 5;
-teamavg = ((q1+q2+q3+q4)/4);
-teamcomments = "Not a bad presentation not a good one either";
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        avgPanel.add(avgLabel, gbc);
 
-updateTeams();
-}
-// else if(event.getSource().equals(clearButton))
-// {
-// textavgtextbox.text = "";
-// submitButton.setEnabled(false);
-// }
-// else if(event.getSource().equals(teamavgButton))
-// {
-// int tempval1 = slidertechnical.getValue();
-// int tempval2 = slideruse.getValue();
-// int tempval3 = sliderclarity.getValue();
-// int tempval4 = slideroverall.getValue();
-// teamavg = (double)(tempval1 + teampval2 + tempval3 + tempval4)/4.0
-// teamavgTextBox.text = teamavg;
-// submitButton.setEnabled(true);
-// avgcalculated = true;
+        gbc.gridx = 3;
+        avgPanel.add(avgTextField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
 
-}
+        avgPanel.add(calcAvg, gbc);
 
+        gbc.gridx = 3;
+        avgPanel.add(toggleDisplay, gbc);
+        gbc.gridx = 0;
 
-@Override
-public void itemStateChanged(ItemEvent event)
-{
+        commentsPanel.add(commentsLabel, gbc);
 
-if ( event.getSource() == rb1 && event.getStateChange() == ItemEvent.SELECTED)
-{
-q1 = Integer.parseInt(rb1.getText());
-}
-else if (event.getSource() == rb2 && event.getStateChange() == ItemEvent.SELECTED)
-{
-q1 = Integer.parseInt(rb2.getText());
-}
-else if (event.getSource() == rb3 && event.getStateChange() == ItemEvent.SELECTED)
-{
-q1 = Integer.parseInt(rb3.getText());
-}
-else if( event.getSource() == rb1 && event.getStateChange() == ItemEvent.DESELECTED)
-{
-JOptionPane.showMessageDialog(null, "Eggs are not supposed to be green.");
-}
-}
-private void updateTeams()
-{
-// update balance in database
-//try
-//{
-//// Below is an example of creating a SQL statement that updated more than a single field in one statement.
-//String sql1 = "UPDATE APP.TEAM SET Q1 = " + q1
-//+ ", Q2 = " + q2
-//+ ", Q3 = " + q3
-//+ ", Q4 = " + q4
-//+ ", TEAMAVG = " + teamavg
-//+ ", COMMENTS = " + "'" + teamcomments
-//+ "'" + "WHERE " + "TEAMS = " + "'" + myteamname + "'";
-//String sql2 = "UPDATE APP.TEAM SET Q2USEFUL = " + q2 + " WHERE " + "TEAMS = " + "'" + myteamname + "'";
-//// String sql3;
-//// String sql4;
-//// String sql5;
-//// String sql6 = "UPDATE APP.TEAM SET COMMENTS = " + "'" + teamcomments + "'" + " WHERE " + "TEAMS = " + "'" + myteamname + "'";
-////myStatement.executeUpdate(sql1);
-//
-//
-//}
-//catch ( SQLException exception )
-//{
-//exception.printStackTrace();
-//}
+        gbc.gridx = 3;
 
-} // end method updateBalance
-private void loadTeams()
-{
-// get all account numbers from database
-//try
-//{
-//
-////myResultSet = myStatement.executeQuery( "SELECT DISTINCT lastname FROM InstEval" );
-//myResultSet = myStatement.executeQuery( "SELECT TEAMS FROM APP.TEAM" );
-//// add account numbers to accountNumberJComboBox
-//while ( myResultSet.next() )
-//{
-////instructorComboBox.addItem( myResultSet.getString( "lastname" ) );
-//teamComboBox.addItem( myResultSet.getString( "TEAMS" ) );
-//}
-//
-//myResultSet.close(); // close myResultSet
-//
-//} // end try
-//
-//catch ( SQLException exception )
-//{
-//System.out.println(exception.getMessage());
-//}
-}
+        commentsPanel.add(commentTextArea, gbc);
 
-// private void loadCourses()
-// {
-// // get all account numbers from database
-// try
-// {
-//
-// myResultSet = myStatement.executeQuery( "SELECT DISTINCT course FROM APP.TEAMEVAL");
-// //myResultSet = myStatement.executeQuery( "SELECT DISTINCT course FROM InstEval");
-// // add account numbers to accountNumberJComboBox
-// while ( myResultSet.next() )
-// {
-// courseComboBox.addItem(
-// myResultSet.getString( "course" ) );
-// }
-//
-// myResultSet.close(); // close myResultSet
-//
-// } // end try
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        buttonPanel.add(submit, gbc);
 
-// catch ( SQLException exception )
-// {
-// exception.printStackTrace();
-// }
-// }
+        gbc.gridx = 3;
+        buttonPanel.add(clear, gbc);
+        
+                // get all account numbers from database
+        try {
 
+//myResultSet = myStatement.executeQuery( "SELECT DISTINCT lastname FROM InstEval" );
+            myResultSet = myStatement.executeQuery("SELECT TEAMS FROM APP.TEAM");
+// add account numbers to accountNumberJComboBox
+            while (myResultSet.next()) {
+//instructorComboBox.addItem( myResultSet.getString( "lastname" ) );
+                teamComboBox.addItem(myResultSet.getString("TEAMS"));
+            }
+
+            myResultSet.close(); // close myResultSet
+
+        } // end try
+        catch (SQLException exception) {
+            System.out.println(exception.getMessage());
+        } catch (NullPointerException e) {
+            System.out.println("Error connecting to the database: Make sure to check your connection");
+            teamComboBox.addItem("ERROR CONNECTING TO DATABASE");
+            teamComboBox.setSelectedIndex(1);
+            q1Slider.setEnabled(false);
+            q2Slider.setEnabled(false);
+            q3Slider.setEnabled(false);
+            q4Slider.setEnabled(false);
+            clear.setEnabled(false);
+            commentTextArea.setEnabled(false);
+            calcAvg.setEnabled(false);
+            toggleDisplay.setEnabled(false);
+        }
+
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent event) {
+
+        if (event.getSource().equals(calcAvg)) {
+            average = (q1Slider.getValue() + q2Slider.getValue() + q3Slider.getValue() + q4Slider.getValue()) / 4.0;
+            int roundedAverage = (int) Math.round(average);
+            if (!displayingDecimal) {
+                switch (roundedAverage) {
+                    case 1:
+                        avgTextField.setText("C-");
+                        break;
+                    case 2:
+                        avgTextField.setText("C");
+                        break;
+                    case 3:
+                        avgTextField.setText("C+");
+                        break;
+                    case 4:
+                        avgTextField.setText("B-");
+                        break;
+                    case 5:
+                        avgTextField.setText("B");
+                        break;
+                    case 6:
+                        avgTextField.setText("B+");
+                        break;
+                    case 7:
+                        avgTextField.setText("A-");
+                        break;
+                    case 8:
+                        avgTextField.setText("A");
+                        break;
+                }
+            } else {
+                avgTextField.setText(String.valueOf(average));
+            }
+            submit.setEnabled(true);
+        } else if (event.getSource().equals(submit)) {
+            clearedStart = false;
+            // update balance in database
+            try {
+                int q1 = q1Slider.getValue(),
+                        q2 = q2Slider.getValue(),
+                        q3 = q3Slider.getValue(),
+                        q4 = q4Slider.getValue();
+                String teamcomments = commentTextArea.getText();
+                String myteamname = (String) teamComboBox.getSelectedItem();
+// Below is an example of creating a SQL statement that updated more than a single field in one statement.
+                String sql1 = "UPDATE APP.TEAM SET Q1 = " + q1
+                        + ", Q2 = " + q2
+                        + ", Q3 = " + q3
+                        + ", Q4 = " + q4
+                        + ", TEAMAVG = " + average
+                        + ", COMMENTS = " + "'" + teamcomments
+                        + "'" + "WHERE " + "TEAMS = " + "'" + myteamname + "'";
+                myStatement.executeUpdate(sql1);
+
+            } catch (SQLException exception) {
+                exception.printStackTrace();
+            }
+            System.out.println("Clear");
+            teamComboBox.setSelectedIndex(0);
+            q1Slider.setValue(1);
+            q2Slider.setValue(1);
+            q3Slider.setValue(1);
+            q4Slider.setValue(1);
+            commentTextArea.setText("\n           Enter comments about the presentation here.");
+            avgTextField.setText("");
+            submit.setEnabled(false);
+        } else if (event.getSource().equals(clear)) {
+            clearedStart = false;
+            System.out.println("Clear");
+            teamComboBox.setSelectedIndex(0);
+            q1Slider.setValue(1);
+            q2Slider.setValue(1);
+            q3Slider.setValue(1);
+            q4Slider.setValue(1);
+            commentTextArea.setText("\n           Enter comments about the presentation here.");
+            avgTextField.setText("");
+            submit.setEnabled(false);
+        } else if (event.getSource().equals(toggleDisplay)) {
+            if(displayingDecimal) {
+                toggleDisplay.setText("Display Decimal");
+            } else {
+                toggleDisplay.setText("  Display  Letter ");
+            }
+            displayingDecimal = !displayingDecimal;
+        }
+    }
+
+    @Override
+    public void itemStateChanged(ItemEvent ie) {
+
+    }
 }
